@@ -1,18 +1,18 @@
-#Codis简介：
-##Codis 是一个分布式 Redis 解决方案, 对于上层的应用来说, 连接到 Codis Proxy 和连接原生的 Redis Server 没有显著区别 (不支持的命令列表), 上层应用可以像使用单机的 Redis 一样使用, Codis 底层会处理请求的转发, 不停机的数据迁移等工作, 所有后边的一切事情, 对于前面的客户端来说是透明的, 可以简单的认为后边连接的是一个内存无限大的 Redis 服务。
+# Codis简介：
+## Codis 是一个分布式 Redis 解决方案, 对于上层的应用来说, 连接到 Codis Proxy 和连接原生的 Redis Server 没有显著区别 (不支持的命令列表), 上层应用可以像使用单机的 Redis 一样使用, Codis 底层会处理请求的转发, 不停机的数据迁移等工作, 所有后边的一切事情, 对于前面的客户端来说是透明的, 可以简单的认为后边连接的是一个内存无限大的 Redis 服务。
 
 ##Codis redis集群方案
 ###根据公司线上需求及资源限制原因，规划codis的分布式部署将各组件分离部署到两台主机上，满足高可用和负载需求.
 	
 
 
-Codis分布式集群架构图：
+## Codis分布式集群架构图：
 
 ![](https://raw.githubusercontent.com/CodisLabs/codis/release3.2/doc/pictures/architecture.png)
 
-##部署规划
+## 部署规划
 
-####codis01：10.0.0.21
+#### codis01：10.0.0.21
 
 		部署：
              codis-proxy : 无状态代理，负责客户端连接代理redis服务，客户端连接proxy如同连接单节点redis一样
@@ -20,7 +20,7 @@ Codis分布式集群架构图：
              redis-sentine: redis哨兵服务，用于codis调用redis哨兵管理redis主从切换
              zookeeper   : 为集群状态提供外部存储
 
-####codis02: 10.0.0.22
+#### codis02: 10.0.0.22
 
         部署：
              codis-proxy
@@ -32,9 +32,9 @@ Codis分布式集群架构图：
                        通过配置文件管理后端 codis-dashboard 列表，配置文件可自动更新
              redis-sentine:
 
-##部署步骤（测试环境搭建）：
+## 部署步骤（测试环境搭建）：
 
-####* 环境准备：
+#### 环境准备：
 
 
 		一、为两台虚拟机配置go环境和java环境，两台都做：
@@ -97,7 +97,7 @@ Codis分布式集群架构图：
 					root@codis1:/usr/local/codis/src/github.com/CodisLabs/codis# 
          
  
-####* 部署zookeeper服务：[10.0.0.21]
+#### 部署zookeeper服务：[10.0.0.21]
 
 
                1.1 部署zookeeper服务：部署为多实例: 到正式环境 可以将三个zk节点分别部署到三个服务器上
@@ -162,7 +162,7 @@ Codis分布式集群架构图：
 					Using config: /opt/zk3/zk3.cfg
 					Mode: follower
 
-####* 部署codis-server: [本测试 双实例部署{10.0.0.21，10.0.0.22都部署一套双实例，配置文件修改和命名方式一样}]
+#### 部署codis-server: [本测试 双实例部署{10.0.0.21，10.0.0.22都部署一套双实例，配置文件修改和命名方式一样}]
 				
 				1.1 创建codis-server多实例配置文件
                     # cd /usr/local/codis/config
@@ -252,7 +252,7 @@ Codis分布式集群架构图：
 						tcp        0      0 0.0.0.0:6379            0.0.0.0:*               LISTEN      45557/codis-server 
 						tcp        0      0 0.0.0.0:6381            0.0.0.0:*               LISTEN      35399/codis-server 
 
-####* 部署codis-dashboard服务[此服务搭建在 10.0.0.12上]：
+#### 部署codis-dashboard服务[此服务搭建在 10.0.0.12上]：
 				
                 1.1、生成codis-dashboard的配置文件：
 					# cd /usr/local/codis/bin/
@@ -280,7 +280,7 @@ Codis分布式集群架构图：
 					netstat -lntp|grep codis-dashboa
 					tcp6       0      0 :::18080                :::*                    LISTEN      11266/codis-dashboa
 
-####* 部署codis-proxy服务[两台服务器上都搭建此服务(配置文件相同)，可配合keepalived做高可用代理，也可此代理前端用haproxy做负载均衡]
+#### 部署codis-proxy服务[两台服务器上都搭建此服务(配置文件相同)，可配合keepalived做高可用代理，也可此代理前端用haproxy做负载均衡]
 
                 1.1、生成codis-dashboard的配置文件：
 					# cd /usr/local/codis/bin/
@@ -312,7 +312,7 @@ Codis分布式集群架构图：
 					tcp        0      0 0.0.0.0:19000           0.0.0.0:*               LISTEN      12931/codis-proxy
 					tcp6       0      0 :::11080                :::*                    LISTEN      12931/codis-proxy
 
-####* 部署Redis-sentinel服务：
+#### 部署Redis-sentinel服务：
                Redis官方推荐的高可用性(HA)解决方案。它可以实现对Redis的监控、通知、自动故障转移：
                注意： [两台服务器都搭建一个，作为高可用，
                      而且对于判断主从切换，需要两个sentinel服务都检测故障才可切换主从，
@@ -345,7 +345,7 @@ Codis分布式集群架构图：
                    # netstat -lntp|grep redis-sentine
 					tcp        0      0 0.0.0.0:26379           0.0.0.0:*               LISTEN      11866/redis-sentine
 
-####* 部署codis-fe服务 集群管理界面
+#### 部署codis-fe服务 集群管理界面
 
               注意：[需要和codis-dashboard搭建在同一台服务器上，搭建在10.0.0.22]
               
@@ -367,6 +367,6 @@ Codis分布式集群架构图：
 					tcp6       0      0 :::18090                :::*                    LISTEN      12771/codis-fe
 
 
-####* 至此codis集群搭建完毕：
+#### 至此codis集群搭建完毕：
 			  打开浏览器，输入10.0.0.22:18090便可看到codis集群的监控界面：
               链接codis操作redis： redis-cli -h 10.0.0.21 -p 19000 -a 56789
