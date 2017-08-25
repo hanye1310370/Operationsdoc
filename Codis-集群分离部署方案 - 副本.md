@@ -163,6 +163,8 @@
 					Mode: follower
 
 #### 部署codis-server: 本测试 双实例部署 10.0.0.21，10.0.0.22 都部署一套双实例，配置文件修改和命名方式一样。
+
+
 				1.1 创建codis-server多实例配置文件:
 					# cd /usr/local/codis/config
 					# cp redis.cnf redis_6379.conf 
