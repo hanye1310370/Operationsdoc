@@ -169,6 +169,7 @@
                     # cd /usr/local/codis/config
 					# cp redis.cnf redis_6379.conf 
                     # cp redis.cnf redis_6381.conf
+
                 1.2 修改多实例配置文件参数： 
 				    # vim redis_6379.conf 
 					# 部分关键参数
