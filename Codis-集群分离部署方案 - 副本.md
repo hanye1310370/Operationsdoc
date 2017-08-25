@@ -171,70 +171,70 @@
 					# cp redis.cnf redis_6381.conf
 
 				1.2 修改多实例配置文件参数： 
-				    # vim redis_6379.conf 
+					# vim redis_6379.conf 
 					# 部分关键参数
-
+								
 					bind 0.0.0.0 -------------- IP
-
+					
 					port 6379    -------------- 端口
-
-
+					
+					
 					pidfile "/tmp/redis_6379.pid" ------------- pid
-
+					
 					logfile "/tmp/redis_6379.log" -------------- 日志
-
+					
 					databases 16                  -------------- db数量可修改更多
-
+					
 					save 900 1                    -------------- 持久化rdb
 					save 300 10
 					save 60 10000
-
+					
 					dbfilename "dump_6379.rdb"    -------------- 持久化rdb文件
-
+					
 					dir "/usr/local/codis-release3.2"  -------------codis程序主目录
-
+					
 					masterauth "123456"           -------------- 主从同步密码
-
+					
 					slave-read-only yes           -------------- 作为从库后只读
-
+					
 					requirepass "123456"          -------------- 客户端访问redis服务密码
-
+					
 					maxmemory 1g                  -------------- 最大内存阈值
-
+					
 					appendonly yes                -------------- aof持久化
 					appendfilename "appendonly_6379.aof" ------- aof持久化文件
 					appendfsync everysec
-
-				    # vim redis_6381.conf 
+					
+					# vim redis_6381.conf 
 					# 部分关键参数
-
+					
 					bind 0.0.0.0 -------------- IP
-
+					
 					port 6381    -------------- 端口
-
-
+					
+					
 					pidfile "/tmp/redis_6381.pid" ------------- pid
-
+					
 					logfile "/tmp/redis_6381.log" -------------- 日志
-
+					
 					databases 16                  -------------- db数量可修改更多
-
+					
 					save 900 1                    -------------- 持久化rdb
 					save 300 10
 					save 60 10000
-
+					
 					dbfilename "dump_6379.rdb"    -------------- 持久化rdb文件
-
+					
 					dir "/usr/local/codis-release3.2"  -------------codis程序主目录
-
+					
 					masterauth "123456"           -------------- 主从同步密码
-
+					
 					slave-read-only yes           -------------- 作为从库后只读
-
+					
 					requirepass "123456"          -------------- 客户端访问redis服务密码
-
+					
 					maxmemory 1g                  -------------- 最大内存阈值
-
+					
 					appendonly yes                -------------- aof持久化
 					appendfilename "appendonly_6379.aof" ------- aof持久化文件
 					appendfsync everysec
@@ -243,8 +243,8 @@
 	
 					一、10.0.0.21:
 						# cd /usr/local/codis
-					    # ./bin/codis-server config/redis_6379.conf 
-					    # ./bin/codis-server config/redis_6381.conf 
+						# ./bin/codis-server config/redis_6379.conf 
+						# ./bin/codis-server config/redis_6381.conf 
 					二、10.0.0.22：
 						# cd /usr/local/codis
 						# ./bin/codis-server config/redis_6379.conf 
