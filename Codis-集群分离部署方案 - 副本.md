@@ -54,9 +54,9 @@
 					# tar xf go1.8.3.linux-amd64.tar.gz -C /usr/local/
 				3.2 设置go环境变量：
 					# vim /root/.bashrc
-						export GOROOT=/usr/local/go # 安装路径 
-						export GOPATH=/usr/local/codis # 工作路径 
-						export PATH=$PATH:$GOPATH/bin:$GOROOT/bin # 命令搜索路径
+					  export GOROOT=/usr/local/go # 安装路径 
+					  export GOPATH=/usr/local/codis # 工作路径 
+					  export PATH=$PATH:$GOPATH/bin:$GOROOT/bin # 命令搜索路径
 
         二、编译安装codis，两台都做：
 
@@ -256,7 +256,7 @@
 				
                 1.1、生成codis-dashboard的配置文件：
 					# cd /usr/local/codis/bin/
-                    # ./codis-dashboard --default-conifg | tee /usr/local/codis/conf/dashboard.conf 
+					# ./codis-dashboard --default-conifg | tee /usr/local/codis/conf/dashboard.conf 
 		
 				1.2  修改配置文件：
 					# vim ../conf/dashboard.conf
@@ -283,7 +283,8 @@
 					netstat -lntp|grep codis-dashboa
 					tcp6       0      0 :::18080                :::*                    LISTEN      11266/codis-dashboa
 
-#### 部署codis-proxy服务[两台服务器上都搭建此服务(配置文件相同)，可配合keepalived做高可用代理，也可此代理前端用haproxy做负载均衡]
+#### 部署codis-proxy服务
+#### 两台服务器上都搭建此服务(配置文件相同)，可配合keepalived做高可用代理，也可此代理前端用haproxy做负载均衡。
 
 				1.1  生成codis-dashboard的配置文件：
 					# cd /usr/local/codis/bin/
@@ -322,15 +323,15 @@
                      所以为了高可用，生产环境许搭建三个为一集群
                      本测试环境搭建两个]
 
-                1、拷贝程序：
+				1、拷贝程序：
                    # cd usr/local/codis/
 				   # cp -fr extern/redis-3.2.8/src/redis-sentinel /usr/local/codis/bin/
 
-                2、拷贝配置：
+				2、拷贝配置：
                    # cd usr/local/codis/
 				   # cp -fr extern/redis-3.2.8/sentinel.conf /usr/local/codis/config/
 
-                3、修改配置：
+				3、修改配置：
 					# mkdir /usr/local/codis/data/
 					# cd /usr/local/codis/config/
 					# vim sentinel.conf
@@ -353,8 +354,9 @@
               注意：[需要和codis-dashboard搭建在同一台服务器上，搭建在10.0.0.22]
               
 				1、生成配置文件：
-				   # cd /usr/local/codis/bin
-                   # ./codis-amdin - -dashboard-list - -zookeeper=192.168.1.51:2181 | tee /usr/local/codis/config/codis.json
+					# cd /usr/local/codis/bin
+					# ./codis-amdin - -dashboard-list - -zookeeper=192.168.1.51:2181 | tee /usr/local
+					codis/config/codis.json
 					[ 
 						{ 
 						"name":"codis-fx",
