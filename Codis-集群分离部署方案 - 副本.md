@@ -22,7 +22,7 @@
 
 #### codis02: 10.0.0.22
 
-        部署：
+		部署：
              codis-proxy
              codis-server
              codis-dashboard:集群管理工具，codis-proxy、codis-server 的添加、删除，以及据迁移等操作。
@@ -45,32 +45,32 @@
             2、安装环境：
 				2.1 安装java环境 直接源安装：
 					# apt-get install oracle-java8-installer
-                    # java -version
+					# java -version
 					  java version "1.8.0_144"
 					  Java(TM) SE Runtime Environment (build 1.8.0_144-b01)
 					  Java HotSpot(TM) 64-Bit Server VM (build 25.144-b01, mixed mode)
             3、安装部署go环境：
 				3.1 安装go：
 					# tar xf go1.8.3.linux-amd64.tar.gz -C /usr/local/
-                3.2 设置go环境变量：
+				3.2 设置go环境变量：
 					# vim /root/.bashrc
-                      export GOROOT=/usr/local/go # 安装路径 
-					  export GOPATH=/usr/local/codis # 工作路径 
-					  export PATH=$PATH:$GOPATH/bin:$GOROOT/bin # 命令搜索路径
+						export GOROOT=/usr/local/go # 安装路径 
+						export GOPATH=/usr/local/codis # 工作路径 
+						export PATH=$PATH:$GOPATH/bin:$GOROOT/bin # 命令搜索路径
 
         二、编译安装codis，两台都做：
 
-			   1、 获取 codis代码：
+				1、 获取 codis代码：
 					# cd /usr/local/src/
-                    # wget https://codeload.github.com/CodisLabs/codis/zip/release3.2
-               2、 解压 codis代码压缩包：
-                    # unzip codis-release3.2.zip
-                    # mv /usr/local/codis/src/codis-release3.2 /usr/local/
-                    # ln -s /usr/local/codis/codis-release3.2 /usr/local/codis
-               3、 编译
-                    # cd /usr/local/codis/
-                    # make 
-       		   4、 查看脚本和命令：
+					# wget https://codeload.github.com/CodisLabs/codis/zip/release3.2
+				2、 解压 codis代码压缩包：
+					# unzip codis-release3.2.zip
+					# mv /usr/local/codis/src/codis-release3.2 /usr/local/
+					# ln -s /usr/local/codis/codis-release3.2 /usr/local/codis
+				3、 编译
+					# cd /usr/local/codis/
+					# make 
+				4、 查看脚本和命令：
 					# ll admin/
 
 					总用量 16
@@ -79,7 +79,7 @@
 					-rwxr-xr-x 1 root staff 2102 8月  10 20:27 codis-proxy-admin.sh
 					-rwxr-xr-x 1 root staff 1722 8月  10 20:27 codis-server-admin.sh
 
-				    # ll bin/
+					# ll bin/
 
 					总用量 93272
 					drwxr-sr-x 4 root staff     4096 8月  24 13:23 assets
@@ -101,15 +101,15 @@
 
 
                1.1 部署zookeeper服务：部署为多实例: 到正式环境 可以将三个zk节点分别部署到三个服务器上
-				    # tar xf zookeeper-3.4.9.tar.gz -C /usr/local/
-                    # mkdir /opt/zk{1,2,3}
-                    # cp /usr/local/zookeeper/conf/zoo_sample.cfg /opt/zk1/zk1.cfg
+					# tar xf zookeeper-3.4.9.tar.gz -C /usr/local/
+					# mkdir /opt/zk{1,2,3}
+					# cp /usr/local/zookeeper/conf/zoo_sample.cfg /opt/zk1/zk1.cfg
 					# cp /usr/local/zookeeper/conf/zoo_sample.cfg /opt/zk2/zk2.cfg
 					# cp /usr/local/zookeeper/conf/zoo_sample.cfg /opt/zk3/zk3.cfg
-			        # cd /opt/
-                    # echo 1 > zk1/myid
-                    # echo 2 > zk2/myid
-                    # echo 3 > zk3/myid
+					# cd /opt/
+					# echo 1 > zk1/myid
+					# echo 2 > zk2/myid
+					# echo 3 > zk3/myid
 
                1.2 修改zk配置文件内容如下：
 					# grep "^[a-Z]" zk1/zk1.cfg 
@@ -121,8 +121,8 @@
 					server.1=10.0.0.21:2887:3887
 					server.2=10.0.0.21:2888:3888
 					server.3=10.0.0.21:2889:3889
-
-                    # grep "^[a-Z]" zk2/zk2.cfg 
+					
+					# grep "^[a-Z]" zk2/zk2.cfg 
 					tickTime=2000
 					initLimit=10
 					syncLimit=5
@@ -131,7 +131,7 @@
 					server.1=10.0.0.21:2887:3887
 					server.2=10.0.0.21:2888:3888
 					server.3=10.0.0.21:2889:3889
-
+					
 					# grep "^[a-Z]" zk3/zk3.cfg 
 					tickTime=2000
 					initLimit=10
@@ -151,12 +151,12 @@
 					ZooKeeper JMX enabled by default
 					Using config: /opt/zk1/zk1.cfg
 					Mode: follower
-
+					
 					# /usr/local/zookeeper/bin/zkServer.sh status /opt/zk2/zk2.cfg 
 					ZooKeeper JMX enabled by default
 					Using config: /opt/zk2/zk2.cfg
 					Mode: leader
-
+					
 					# /usr/local/zookeeper/bin/zkServer.sh status /opt/zk3/zk3.cfg
 					ZooKeeper JMX enabled by default
 					Using config: /opt/zk3/zk3.cfg
@@ -166,9 +166,9 @@
 
 				
 				1.1 创建codis-server多实例配置文件:
-                    # cd /usr/local/codis/config
+					# cd /usr/local/codis/config
 					# cp redis.cnf redis_6379.conf 
-                    # cp redis.cnf redis_6381.conf
+					# cp redis.cnf redis_6381.conf
 
                 1.2 修改多实例配置文件参数： 
 				    # vim redis_6379.conf 
