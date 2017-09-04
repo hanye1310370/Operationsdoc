@@ -1,6 +1,6 @@
-#saltstack 配置haproxy
+# saltstack 配置haproxy
 
-#1、安装一遍haproxy
+# 1、安装一遍haproxy
 	wget http://www.haproxy.org/download/1.7/src/haproxy-1.7.5.tar.gz
 	cp haproxy-1.7.5.tar.gz /usr/local/src
 	cd /usr/local/src
