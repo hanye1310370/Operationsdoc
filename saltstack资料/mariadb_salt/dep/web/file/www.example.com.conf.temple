@@ -1,0 +1,30 @@
+server {
+        listen       80;
+        server_name  www.example.com;
+        root  html/www.example.com;
+        index index.html index.htm index.php default.html default.htm default.php;
+        location / {
+                   if (-f $request_filename/index.html) {
+                       rewrite (.*) $1/index.html break;
+                   }
+                   if (-f $request_filename/index.php) {
+                       rewrite (.*) $1/index.php; 
+                   }
+                   if (-f $request_filename) {
+                       rewrite (.*) /index.php;
+                   }
+        }
+        location ~ .*\.(php|php5)?$ {
+            root   html/www.example.com;
+            fastcgi_pass 127.0.0.1:9000;
+            fastcgi_index index.php;
+            include fastcgi.conf;
+        }
+        location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$ {
+            expires  10y;
+        }
+        location ~ .*\.(js|css)?$ {
+            expires  30d;
+        }
+        access_log /usr/local/nginx/logs/www.example.com.log main;
+}

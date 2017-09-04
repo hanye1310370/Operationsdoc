@@ -1,0 +1,69 @@
+#!/bin/bash
+#chkconfig: 2345 32 61
+
+[ -f /etc/init.d/functions ] && . /etc/init.d/functions
+
+PIDFILE=/usr/local/nginx/logs/nginx.pid
+
+USAGE(){
+     echo "USAGE: $0 [start|stop|reload|status]"
+}
+
+START(){
+     if [ -f $PIDFILE ]
+        then
+            echo "nginx is running"
+        else
+            /usr/local/nginx/sbin/nginx &>/dev/null
+            action "nginx is started" /bin/true
+     fi
+}
+
+STOP(){
+     if [ -f $PIDFILE ]
+        then
+          /usr/local/nginx/sbin/nginx -s stop &>/dev/null
+          action "nginx is stoped" /bin/true
+        else
+          echo "$PIDFILE : NO SUCH FILE OR DOCUMENTS" 
+          action "stop nginx service" /bin/false
+     fi
+}
+
+RELOAD(){
+     if [ -f $PIDFILE ]
+        then
+           /usr/local/nginx/sbin/nginx -s reload &>/dev/null
+           action "nginx is reloaded" /bin/true
+        else
+           echo "$PIDFILE: NO SUCHFILE OR DOCUMENTS"
+           action "reload nginx service" /bin/false
+     fi
+}
+
+STATUS(){
+     if [ -f $PIDFILE ]
+        then
+           action "nginx is running" /bin/true
+        else
+           action "nginx is not running" /bin/false
+     fi
+}
+
+
+case "$1" in
+        start)
+             START
+             ;;
+         stop)
+             STOP
+             ;;
+       reload)
+             RELOAD
+             ;;
+       status)
+             STATUS
+             ;;
+            *)
+             USAGE
+esac
