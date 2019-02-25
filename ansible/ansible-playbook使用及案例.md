@@ -69,7 +69,6 @@
 			owner: root
 			group: root
 			mode: 644
-    	- name: php dir ---------------------------------任务名称
 		- name: php dir
 		  shell: test -d /usr/local/php ------------------ 检测目录是否存在 --- 另一种方式 将 路径写到vars变量里 在when中通过 is exists is directory is file is link 等进行判断
 		  ignore_errors: True ---------------------------- 忽略错误

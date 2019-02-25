@@ -1,0 +1,4 @@
+- hosts: server02
+  remote_user: root
+  roles:
+    - php

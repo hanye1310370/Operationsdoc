@@ -1,0 +1,16 @@
+- name: "yum install packages"
+  yum: 
+    name:
+      - libxml2
+      - libxml2-devel
+      - libcurl
+      - libcurl-devel
+      - libjpeg
+      - libjpeg-devel
+      - libpng
+      - libpng-devel
+      - freetype
+      - freetype-devel
+      - libicu-devel
+      - gcc-c++
+      - libxslt-devel
