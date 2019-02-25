@@ -56,21 +56,21 @@
     	- name: useradd www ------------------------------任务名称
     	  shell: "[ -z $(grep www /etc/passwd) ] && useradd www -M -s /sbin/nologin || echo 'www is exist'" --- shell模块及 shell执行的命令
     	- name: copy tar to remote dir -------------------任务名称
-    	  copy: ------------------------------------------copy模块
+		  copy: ------------------------------------------copy模块
 			src: /soft/ ----------------------------------源文
 			dest: /usr/local/src/ ------------------------ 目标
 			owner: root ----------------------------------用户、组
 			group: root
 			mode: 644 ------------------------------------权限
     	- name: copy php-fpm.service
-    	  copy:
+		  copy:
 			src: /soft/php-fpm.service
 			dest: /usr/lib/systemd/system/
 			owner: root
 			group: root
 			mode: 644
     	- name: php dir ---------------------------------任务名称
-    	  file: path=/usr/local/php state=directory --------file 模块 ： 目录或文件存在不创建
+		  file: path=/usr/local/php state=directory --------file 模块 ： 目录或文件存在不创建
 		  notify: php install --------------------------notify监控： 此任务file模块目录存在 监控的handler不执行，否者创建目录并执行handler
     	- name: template php-fpm.default
     	  template: --------------------------------------使用jinjia2模板 应用中 根据 vars 变量更新配置文件最好用 模板文件中表达式{%%} 变量 {{}}
