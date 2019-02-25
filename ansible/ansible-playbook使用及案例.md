@@ -70,16 +70,19 @@
 			group: root
 			mode: 644
     	- name: php dir ---------------------------------任务名称
-		  file: path=/usr/local/php state=directory --------file 模块 ： 目录或文件存在不创建
-		  notify: php install --------------------------notify监控： 此任务file模块目录存在 监控的handler不执行，否者创建目录并执行handler
-    	- name: template php-fpm.default
+		- name: php dir
+		  shell: test -d /usr/local/php ------------------ 检测目录是否存在
+		  ignore_errors: True ---------------------------- 忽略错误
+		  register: php_dir ------------------------------ 注册此任务的结果
+		- name: php install
+		  shell: cd /usr/local/src/ && tar xf php-7.3.2.tar.gz && cd php-7.3.2 && ./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --with-config-file-scan-dir=/usr/local/php/etc/php.d --with-fpm-user=www --with-fpm-group=www --enable-fpm --enable-opcache --disable-fileinfo --enable-mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-iconv --with-freetype-dir --with-jpeg-dir --with-png-dir -with-zlib --with-libxml-dir=/usr --enable-xml --disable-rpath --enable-bcmath --enable-shmop --enable-exif --enable-sysvsem --enable-inline-optimization --with-curl=/usr/local --enable-mbregex --enable-mbstring --with-gd --with-openssl --with-mhash --enable-pcntl --enable-sockets --with-xmlrpc --enable-intl --with-xsl --with-gettext --enable-zip --enable-soap --disable-debug && make -j4 && make install && cd /usr/local/php/etc/ && cp -a php-fpm.conf.default php-fpm.conf && cd php-fpm.d && cp -a www.conf.default www.conf
+		  when: php_dir is failed ----------------------- 当结果为失败的时候执行 此task任务
+	   	- name: template php-fpm.default
     	  template: --------------------------------------使用jinjia2模板 应用中 根据 vars 变量更新配置文件最好用 模板文件中表达式{%%} 变量 {{}}
 			src: /soft/www.conf.j2
 			dest: /usr/local/php/etc/php-fpm.d/www.conf
 		  notify: php-fpm.service
       handlers:
-		- name: php install
-		  shell: cd /usr/local/src/ && tar xf php-7.3.2.tar.gz && cd php-7.3.2 && ./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --with-config-file-scan-dir=/usr/local/php/etc/php.d --with-fpm-user=www --with-fpm-group=www --enable-fpm --enable-opcache --disable-fileinfo --enable-mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-iconv --with-freetype-dir --with-jpeg-dir --with-png-dir -with-zlib --with-libxml-dir=/usr --enable-xml --disable-rpath --enable-bcmath --enable-shmop --enable-exif --enable-sysvsem --enable-inline-optimization --with-curl=/usr/local --enable-mbregex --enable-mbstring --with-gd --with-openssl --with-mhash --enable-pcntl --enable-sockets --with-xmlrpc --enable-intl --with-xsl --with-gettext --enable-zip --enable-soap --disable-debug && make -j4 && make install && cd /usr/local/php/etc/ && cp -a php-fpm.conf.default php-fpm.conf && cd php-fpm.d && cp -a www.conf.default www.conf
 		- name: php-fpm.service ----------------------------任务名称
 		  systemd: -----------------------------------------systemd 服务管理模块
 			name: php-fpm ----------------------------------服务名字
