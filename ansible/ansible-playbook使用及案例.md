@@ -77,12 +77,13 @@
 			src: /soft/www.conf.j2
 			dest: /usr/local/php/etc/php-fpm.d/www.conf
 			notify: php-fpm.service
+
+      handlers:
+		- name: php install
+			  shell: cd /usr/local/src/ && tar xf php-7.3.2.tar.gz && cd php-7.3.2 && ./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --with-config-file-scan-dir=/usr/local/php/etc/php.d --with-fpm-user=www --with-fpm-group=www --enable-fpm --enable-opcache --disable-fileinfo --enable-mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-iconv --with-freetype-dir --with-jpeg-dir --with-png-dir -with-zlib --with-libxml-dir=/usr --enable-xml --disable-rpath --enable-bcmath --enable-shmop --enable-exif --enable-sysvsem --enable-inline-optimization --with-curl=/usr/local --enable-mbregex --enable-mbstring --with-gd --with-openssl --with-mhash --enable-pcntl --enable-sockets --with-xmlrpc --enable-intl --with-xsl --with-gettext --enable-zip --enable-soap --disable-debug && make -j4 && make install && cd /usr/local/php/etc/ && cp -a php-fpm.conf.default php-fpm.conf && cd php-fpm.d && cp -a www.conf.default www.conf
 		- name: php-fpm.service ----------------------------> 任务名称
 		  systemd: -----------------------------------------> systemd 服务管理模块
 			name: php-fpm ----------------------------------> 服务名字
 			enabled: yes -----------------------------------> enabled
 			state: restarted ---------------------------------> 状态已启动,已重启，服务如果是关闭的就开启服务
-      handlers:
-		- name: php install
-			  shell: cd /usr/local/src/ && tar xf php-7.3.2.tar.gz && cd php-7.3.2 && ./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --with-config-file-scan-dir=/usr/local/php/etc/php.d --with-fpm-user=www --with-fpm-group=www --enable-fpm --enable-opcache --disable-fileinfo --enable-mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-iconv --with-freetype-dir --with-jpeg-dir --with-png-dir -with-zlib --with-libxml-dir=/usr --enable-xml --disable-rpath --enable-bcmath --enable-shmop --enable-exif --enable-sysvsem --enable-inline-optimization --with-curl=/usr/local --enable-mbregex --enable-mbstring --with-gd --with-openssl --with-mhash --enable-pcntl --enable-sockets --with-xmlrpc --enable-intl --with-xsl --with-gettext --enable-zip --enable-soap --disable-debug && make -j4 && make install && cd /usr/local/php/etc/ && cp -a php-fpm.conf.default php-fpm.conf && cd php-fpm.d && cp -a www.conf.default www.conf
 
