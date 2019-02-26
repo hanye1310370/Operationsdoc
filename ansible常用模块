@@ -1,0 +1,166 @@
+2018-12-12 17:41:16
+1.command命令模块
+默认模块
+    root@centos-mysql01:/data/sh# ansible docker -a "hostname"
+         192.168.1.124 | success | rc=0 >>
+           centos-mysql01
+          172.17.0.2 | success | rc=0 >>
+            17466f2471ee
+    root@centos-mysql01:/data/sh# ansible  docker -a "ls -l chdir=/data/sh"
+                    drwxr-xr-x 7 root root 4096 12月 17 11:32 lnmp
+        -rw-r--r-- 1 root root   91 12月 17 11:32 lnmp1_install.sh       
+      root@centos-mysql01:/data/sh# ansible  docker -a "sh hanye.sh chdir=/data/sh"
+    192.168.1.104 | CHANGED | rc=0 >>
+                 total       used       free     shared    buffers     cached
+    Mem:          1996       1902         94          5         78       1592
+    -/+ buffers/cache:        231       1765
+    Swap:         3361          0       3361
+
+     Chdir 更换目录
+     Creates 当文件名已经存在的时候，此步不会执行
+     Executable 换用shell执行命令，表示为一个绝对路径
+     Free_form 需要执行的脚本（没有真正的参数为free_form）
+     Removes 当文件名称存在的时候，此步不会执行
+     Warn 如果在ansible.cfg中存在告警，如果设定了no/False，不会警告此行
+script模块
+yum安装软件模块
+root@centos-mysql01:/data/sh#ansible docker -m yum -a "name=httpd state=installed"
+    name        #指定要安装的软件包名称
+    state       #指定使用yum的方法
+       installed，present   #安装软件包
+       removed，absent      #移除软件包
+       latest              #安装最新软件包 
+copy文件拷贝模块
+推送文件模块
+ root@centos-mysql01:~#  ansible docker -m copy -a "src=/etc/passwd dest=/tmp/test.txt"
+在推送覆盖远程端文件前，对被控制端已有文件进行备份，按照时间信息备份
+root@centos-mysql01:~# ansible dcoker -m copy -a "src=/etc/passwd dest=/tmp/test.txt backup=yes"
+直接向被控制端文件内写入数据信息，并且会覆盖被控制端文件内原有数据信息
+root@centos-mysql01:~#  ansible docker -m copy -a "content='hz7726' dest=/tmp/hanye"
+模块内嵌命令
+ src             #推送数据的源文件信息
+ dest            #推送数据的目标路径
+ backup          #对推送传输过去的文件，进行备份
+ content         #直接批量在被管理端文件中添加内容
+ group           #将本地文件推送到被控制端，指定文件属组信息
+ owner           #将本地文件推送到被控制端，指定文件属主信息
+ mode            #将本地文件推送到被控制端，指定文件权限信息
+file文件配置模块
+root@centos-mysql01:~# ansible docker -m file -a "path=/data/sh state=directory"
+root@centos-mysql01:~# ansible docker -m file -a "path=/data/sh state=touch mode=0644 owner=root group=root"
+root@centos-mysql01:~# ansible docker -m file -a "src=/data/sh path=/data/hanye state=link"
+模块内嵌命令
+path            #指定远程主机目录或文件信息
+recurse         #递归授权
+state 
+     directory   #在创建目录
+     touch       #在被控制端创建文件
+     link        #link或hard表示创建链接文件
+     absent      #表示删除文件或目录
+mode        #设置文件或目录权限
+owner       #设置文件或目录属主信息
+group       #设置文件或目录属组信息
+service服务模块
+root@centos-mysql01:~# ansible docker -m service -a "name=httpd state=started enabled=yes"
+
+name        # 定义要启动服务的名称
+state       # 指定服务状态
+     started     #启动服务
+     stopped     #停止服务
+     restarted   #重启服务
+     reloaded    #重载服务
+ enabled         #开机自启
+group组模块
+root@centos-mysql01:~# ansible docker -m group -a "name=erp  gid=1008"
+
+ name            #指定创建的组名
+ gid             #指定组的gid
+ state   #用户组状态
+     absent      #移除被控制端主机的组
+     present     #创建被控制端主机的组
+user模块
+#创建用户指定uid和gid，不创建家目录也不允许登陆
+   root@centos-mysql01:~# ansible docker -m user -a "name=hanye  uid=1008 group=1008 shell=/sbin/nologin create_home=no"
+#创建用户指定uid和gid，指定家目录和密码
+    root@centos-mysql01:~# ansible docker -m user -a   "name=erp  group=erp uid=1008 password="$6$O9KDopiuPgvkrb4z$ee7/lfljSe79zQLIvDROsFM23hAJRRvVc.JoBWPGW3WbeHBQVG.IFcg1r8RppAIZ8naxckFGvOX2CIiwY6hEw0" home=/home/erp shell=/bin/bash"
+        #password: 明文密码为：666666
+
+uid             #指定用户的uid
+group           #指定用户组名称
+groups          #指定附加组名称
+password        #给用户添加密码 #此处的密码是经过md5加密的密文
+shell           #指定用户登录shell
+create_home     #是否创建家目录
+home       #指定家目录
+cron模块
+ root@centos-mysql01:~# ansible docker  -m cron -a " name='crontab test' minute=5 hour=1 job='sh /data/sh/init_os.sh' "
+     等同于：#crontab test
+                    5 1 * * *  sh /data/sh/init_os.sh
+
+    minute参数：此参数用于设置计划任务中分钟设定位的值
+    hour参数：此参数用于设置计划任务中小时设定位的值
+    day参数：此参数用于设置计划任务中日设定位的值
+    month参数：此参数用于设置计划任务中月设定位的值
+    weekday参数：此参数用于设置计划任务中周几设定位的值
+    user参数：此参数用于设置当前计划任务属于哪个用户
+    job参数：此参数用于指定计划的任务中需要实际执行的命令或者脚本
+    name参数：此参数用于设置计划任务的名称
+    state参数：当计划任务有名称时，我们可以根据名称修改或删除对应的任务，当删除计划任务时，需要将 state 的值设置为 absent。
+mount模块
+root@centos-mysql01:~#  ansible docker -m mount -a "src=192.168.1.124:/data path=/data  fstype=nfs opts=defaults state=present"
+     src： 源地址目录
+     path： 挂在地址
+     opts：默认属性
+     state
+        present     # 开机挂载，仅将挂载配置写入/etc/fstab
+         mounted     # 挂载设备，并将配置写入/etc/fstab
+         unmounted   # 卸载设备，不会清除/etc/fstab写入的配置
+         absent      # 卸载设备，会清理/etc/fstab写入的配置
+synchronize模块
+ #复制目录
+ [root@master ~]# ansible dcoker  -m synchronize -a 'src=/tmp/hanye  dest=/data/soft/ compress=yes'
+#远端拉去
+ [root@master tmp]# ansible docker -m synchronize -a 'mode=pull  src=/root/hanye dest=/data/soft/ compress=yes'
+archive # 是否采用归档模式同步，即以源文件相同属性同步到目标地址
+checksum # 是否效验
+compress # 开启压缩，默认为开启
+copy_links # 同步的时候是否复制连接
+delete # 删除源中没有而目标存在的文件（即以推送方为主）
+dest= # 目标地址
+dest_port # 目标接受的端口，ansible配置文件中的 ansible_ssh_port 变量优先级高于该 dest_port 变量
+dirs # 以非递归的方式传输目录
+existing_only # Skip creating new files on receiver.
+group # Preserve group
+links # Copy symlinks as symlinks.
+mode # 模式，rsync 同步的方式 PUSH\PULL，默认都是推送push。如果你在使用拉取pull功能的时候，可以参考如下来实现mode=pull 更改推送模式为拉取模式
+recursive # 是否递归 yes/no
+rsync_opts # 使用rsync 的参数
+rsync_path # 服务的路径，指定 rsync 命令来在远程服务器上运行。这个参考rsync命令的--rsync-path参数，--rsync-path=PATH # 指定远程服务器上的rsync命令所在路径信息
+rsync_timeout # 指定 rsync 操作的 IP 超时时间，和rsync命令的 --timeout 参数效果一样.
+set_remote_user # put user@ for the remote paths. If you have a custom ssh config to define the remote user for
+src= # 源，同步的数据源
+times # 
+--exclude=.Git 忽略同步.git结尾的文件
+lineinfile模块
+name: 修改nginx.conf指定字段
+lineinfile:
+dest=/data/sh/nginx.conf
+regexp="listen 9080"
+line="listen 8081\;"
+backrefs=yes
+backup=yes
+backrefs为no时，如果没有匹配,则添加一行line。如果匹配了，则把匹配内容替被换为line内容。
+backrefs为yes时，如果没有匹配，则文件保持不变。如果匹配了，把匹配内容替被换为line内容。
+backup为no时，没有匹配，则添加。如果匹配了，则替换
+backup为yes时，没有匹配，添加，如果匹配了，则替换
+unarchive模块
+  用于解压文件，模块包含如下选项：
+      copy：在解压文件之前，是否先将文件复制到远程主机，默认为yes。若为no，则要求目标主机上压缩包必须存在。
+      creates：指定一个文件名，当该文件存在时，则解压指令不执行
+      dest：远程主机上的一个路径，即文件解压的路径 
+      grop：解压后的目录或文件的属组
+      list_files：如果为yes，则会列出压缩包里的文件，默认为no，2.0版本新增的选项
+      mode：解决后文件的权限
+      src：如果copy为yes，则需要指定压缩文件的源路径 
+      owner：解压后文件或目录的属主
+ unarchive: src=/data/ansibel/lnmp-full.tar.gz dest=/data/sh copy=yes mode=0755
